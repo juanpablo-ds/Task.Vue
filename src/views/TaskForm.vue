@@ -1,5 +1,5 @@
 <template>
-  <div>
+     <div>
     <h1 class="text">{{ editing ? 'Editar Tarea' : 'Crear Tarea' }}</h1>
     <form @submit="saveTask" class="task-form">
       <label for="titulo">Título:</label>
@@ -15,28 +15,30 @@
     </form>
   </div>
 </template>
+  
+  <script setup lang="ts">
+  import { ref ,onMounted} from 'vue';
+  import { useRouter } from 'vue-router';
+  import { useTaskStore } from '../stores/store';
+  import { api } from '../http/HttpCallService';
+  import { type Task } from '../models/Task';
+  import { type TiempoFaltante} from '../models/Task';
+  
+  const taskStore = useTaskStore();
+  const router = useRouter();
+  const tiempoFaltante : TiempoFaltante = {dias: 0 , horas:0}
+  const task = ref<Task>({ id: 0, titulo: '', fechaInicio: new Date(), fechaLimite: new Date(), tiempoFaltante});
+  const editing = ref(false);
+ 
+    const props = defineProps({
+        taskId: Number,
+    });
 
-<script setup lang="ts">
-import { ref, onMounted } from 'vue';
-import { useRouter } from 'vue-router';
-import { useTaskStore } from '../stores/store';
-import { api } from '../http/HttpCallService';
-import { type Task } from '../models/Task';
-import { type TiempoFaltante } from '../models/Task';
-
-const taskStore = useTaskStore();
-const router = useRouter();
-const tiempoFaltante: TiempoFaltante = { dias: 0, horas: 0 };
-const task = ref<Task>({ id: 0, titulo: '', fechaInicio: new Date(), fechaLimite: new Date(), tiempoFaltante });
-const editing = ref(false);
-
-const props = defineProps({
-  taskId: Number,
-});
-
-onMounted(() => {
-  if (props.taskId) {
+  onMounted(() => {
+    console.log("props en mounted form",props.taskId)
+  if (props.taskId && props.taskId>0) {
     const existingTask = taskStore.tasks.find(t => t.id === props.taskId);
+    console.log("exists task: ",existingTask)
     if (existingTask) {
       editing.value = true;
       task.value = { ...existingTask };
@@ -45,17 +47,16 @@ onMounted(() => {
     }
   }
 });
-
-const saveTask = async () => {
-  if (editing.value) {
-    console.log('actualizando');
-    await api.updateTask(task.value);
-  } else {
-    console.log('creando');
-    await api.createTask(task.value);
-  }
-  taskStore.updateTask(task.value);
-  router.go(-2);
+  
+  const saveTask = async () => {
+    if (editing.value) {
+        console.log('actualizando');
+      await api.updateTask(task.value);
+    } else {
+        console.log('creando ');
+      await api.createTask(task.value);
+    }
+    taskStore.updateTask(task.value);
 };
 </script>
 
