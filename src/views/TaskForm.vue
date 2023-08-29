@@ -30,13 +30,15 @@
   const task = ref<Task>({ id: 0, titulo: '', fechaInicio: new Date(), fechaLimite: new Date(), tiempoFaltante});
   const editing = ref(false);
  
-const props = defineProps({
-  taskId: Number,
-});
+    const props = defineProps({
+        taskId: Number,
+    });
 
   onMounted(() => {
-  if (props.taskId) {
+    console.log("props en mounted form",props.taskId)
+  if (props.taskId && props.taskId>0) {
     const existingTask = taskStore.tasks.find(t => t.id === props.taskId);
+    console.log("exists task: ",existingTask)
     if (existingTask) {
       editing.value = true;
       task.value = { ...existingTask };
@@ -55,7 +57,8 @@ const props = defineProps({
       await api.createTask(task.value);
     }
     taskStore.updateTask(task.value);
-   router.go(-2); 
+   
+   
 
   };
   </script>
