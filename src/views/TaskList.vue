@@ -1,12 +1,32 @@
 <template>
   <div>
-    <button @click="createTask()">Crear Tarea</button>
+    <button @click="createTask()" class="p-button p-button-success p-mb-3">
+      <i class="pi pi-plus"></i> Crear Tarea
+    </button>
     <h2>Lista de Tareas</h2>
-    <ul>
-      <li v-for="task in taskStore.tasks" :key="task.id">
-        {{ task.titulo }} <button @click="editTask(task)">Editar</button> <button @click="deleteTask(task.id)">Eliminar</button>
-      </li>
-    </ul>
+    <table class="p-table">
+      <thead>
+        <tr>
+          <th>Titulo de Tarea</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="task in taskStore.tasks" :key="task.id">
+          <td>{{ task.titulo }}</td>
+          <td>
+           <div class="actions-container">
+              <button @click="editTask(task)" class="p-button p-button-secondary">
+                <i class="pi pi-pencil"></i>
+              </button>
+              <button @click="deleteTask(task.id)" class="p-button p-button-danger">
+                <i class="pi pi-trash"></i>
+              </button>
+           </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </template>
 
@@ -38,3 +58,34 @@ const deleteTask = async (taskId: number) => {
   taskStore.deleteTask(taskId);
 };
 </script>
+
+<style scoped>
+@import 'primevue/resources/themes/saga-blue/theme.css';
+@import 'primevue/resources/primevue.min.css';
+@import 'primeicons/primeicons.css';
+
+.p-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 1rem;
+}
+
+.actions-container {
+  display: flex;
+  justify-content: space-evenly;
+  gap: 0.5rem;
+}
+.p-table th, .p-table td {
+  padding: 1rem;
+  border: 1px solid #ccc;
+  text-align: center;
+}
+
+.p-button {
+  margin-right: 0.5rem;
+}
+
+.p-mb-3 {
+  margin-bottom: 1rem;
+}
+</style>

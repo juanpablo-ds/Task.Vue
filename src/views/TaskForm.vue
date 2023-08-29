@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h2>{{ editing ? 'Editar Tarea' : 'Crear Tarea' }}</h2>
+        <h1>{{ editing ? 'Editar Tarea' : 'Crear Tarea' }}</h1>
       <form @submit="saveTask">
         <label for="titulo">Título:</label>
         <input v-model="task.titulo" id="titulo" required />
